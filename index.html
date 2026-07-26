@@ -1,42 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FaceTracker — ARKit 52 Blendshape Animation Studio</title>
-  <meta name="description" content="Capture facial animation clips in Apple ARKit 52 blendshape format with MediaPipe, Three.js 3D avatar preview, timeline trimming, IndexedDB storage, and threshold JSON export." />
+  <meta name="description"
+    content="Capture facial animation clips in Apple ARKit 52 blendshape format with MediaPipe, Three.js 3D avatar preview, timeline trimming, IndexedDB storage, and threshold JSON export." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/src/style.css" />
 </head>
+
 <body class="h-full bg-slate-950 text-slate-100 flex flex-col antialiased select-none">
   <!-- Top Navigation Header -->
   <header class="h-14 bg-slate-900/90 border-b border-slate-800 px-6 flex items-center justify-between z-20 shrink-0">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-slate-950"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <div
+        class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          class="text-slate-950">
+          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
       </div>
       <div>
         <h1 class="font-bold text-sm text-slate-100 tracking-wide flex items-center gap-2">
           FaceTracker Studio
-          <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">ARKit 52 Blendshapes</span>
+          <span
+            class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">ARKit
+            52 Blendshapes</span>
         </h1>
       </div>
     </div>
 
     <!-- Right Header Toolbar -->
     <div class="flex items-center gap-4 text-xs">
-      <div id="mediapipe-status-badge" class="flex items-center gap-2 px-3 py-1 bg-slate-800/80 border border-slate-700/80 rounded-full text-slate-300">
+      <div id="mediapipe-status-badge"
+        class="flex items-center gap-2 px-3 py-1 bg-slate-800/80 border border-slate-700/80 rounded-full text-slate-300">
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
         <span id="mediapipe-status-text" class="font-medium">Initializing MediaPipe...</span>
       </div>
 
-      <label class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl cursor-pointer transition border border-slate-700/80 flex items-center gap-2">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <label
+        class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl cursor-pointer transition border border-slate-700/80 flex items-center gap-2">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
         Upload Custom GLTF
         <input type="file" id="gltf-file-input" accept=".gltf,.glb" class="hidden" />
       </label>
 
-      <button id="reset-avatar-btn" class="px-3 py-1.5 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 font-medium rounded-xl transition border border-slate-800">
+      <button id="reset-avatar-btn"
+        class="px-3 py-1.5 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 font-medium rounded-xl transition border border-slate-800">
         Reset 3D Avatar
       </button>
     </div>
@@ -49,10 +66,12 @@
       <!-- Input Source Header Bar -->
       <div class="flex items-center justify-between mb-3 shrink-0">
         <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
-          <button id="src-webcam-btn" class="px-3 py-1 rounded-lg text-xs font-semibold bg-sky-500 text-slate-950 shadow-sm transition">
+          <button id="src-webcam-btn"
+            class="px-3 py-1 rounded-lg text-xs font-semibold bg-sky-500 text-slate-950 shadow-sm transition">
             Webcam Feed
           </button>
-          <button id="src-video-btn" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition">
+          <button id="src-video-btn"
+            class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition">
             Upload Video File
           </button>
           <input type="file" id="video-file-input" accept="video/mp4,video/webm,video/mov" class="hidden" />
@@ -62,25 +81,35 @@
       </div>
 
       <!-- Video & Metadata Container -->
-      <div class="relative flex-1 bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 flex items-center justify-center">
+      <div
+        class="relative flex-1 bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 flex items-center justify-center">
         <!-- Raw Media Source -->
-        <video id="input-video" playsinline class="absolute inset-0 w-full h-full object-contain pointer-events-none opacity-0"></video>
+        <video id="input-video" playsinline
+          class="absolute inset-0 w-full h-full object-contain pointer-events-none opacity-0"></video>
         <!-- Render Canvas for Video Video Frame -->
         <canvas id="video-canvas" class="absolute inset-0 w-full h-full object-contain"></canvas>
         <!-- Superimposed HUD Metadata Canvas -->
-        <canvas id="metadata-canvas" class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10"></canvas>
+        <canvas id="metadata-canvas"
+          class="absolute inset-0 w-full h-full object-contain pointer-events-none z-10"></canvas>
 
         <!-- 3s Countdown Overlay -->
-        <div id="countdown-overlay" class="absolute inset-0 z-30 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden">
+        <div id="countdown-overlay"
+          class="absolute inset-0 z-30 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden">
           <div id="countdown-number" class="text-8xl font-black text-sky-400 font-mono animate-countdown">3</div>
           <p class="text-sm font-semibold text-slate-300 mt-4 tracking-wider uppercase">Get ready for capture...</p>
         </div>
 
         <!-- Initial Placeholder State -->
-        <div id="video-placeholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-950/90 z-0">
-          <svg width="40" height="40" class="text-slate-600 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <div id="video-placeholder"
+          class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-950/90 z-0">
+          <svg width="40" height="40" class="text-slate-600 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
           <p class="text-sm font-bold text-slate-200">Start Camera or Upload Video</p>
-          <p class="text-xs text-slate-400 mt-1 max-w-xs">Grant camera permissions or select a video file to begin real-time facial landmarking.</p>
+          <p class="text-xs text-slate-400 mt-1 max-w-xs">Grant camera permissions or select a video file to begin
+            real-time facial landmarking.</p>
         </div>
       </div>
 
@@ -92,11 +121,13 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <button id="start-rec-btn" class="px-5 py-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-sky-500/20 transition flex items-center gap-2 disabled:opacity-50">
+          <button id="start-rec-btn"
+            class="px-5 py-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-sky-500/20 transition flex items-center gap-2 disabled:opacity-50">
             <span class="w-2.5 h-2.5 rounded-full bg-slate-950"></span>
             Start Recording (3s Countdown)
           </button>
-          <button id="stop-rec-btn" class="px-5 py-2 bg-red-500 hover:bg-red-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-red-500/20 transition hidden flex items-center gap-2 rec-active-pulse">
+          <button id="stop-rec-btn"
+            class="px-5 py-2 bg-red-500 hover:bg-red-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-red-500/20 transition hidden flex items-center gap-2 rec-active-pulse">
             <span class="w-2.5 h-2.5 rounded bg-slate-950"></span>
             Stop Recording
           </button>
@@ -105,39 +136,52 @@
     </section>
 
     <!-- Right Panel: Interactive 3D Avatar Viewport -->
-    <section class="flex flex-col bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 min-h-0 overflow-hidden relative">
+    <section
+      class="flex flex-col bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 min-h-0 overflow-hidden relative">
       <!-- 3D Toolbar Overlay -->
-      <div class="absolute top-6 left-6 right-6 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-        <div class="px-3 py-1.5 bg-slate-900/90 border border-slate-800 rounded-xl text-xs font-semibold text-slate-200 pointer-events-auto shadow-lg backdrop-blur-md flex items-center gap-2">
+      <div
+        class="absolute top-6 left-6 right-6 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+        <div
+          class="px-3 py-1.5 bg-slate-900/90 border border-slate-800 rounded-xl text-xs font-semibold text-slate-200 pointer-events-auto shadow-lg backdrop-blur-md flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-sky-400"></span>
           Interactive 3D Expression Preview
         </div>
 
-        <div class="flex items-center gap-2 pointer-events-auto backdrop-blur-md bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 shadow-lg text-xs">
-          <label class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium" title="Enable GPU depth buffer testing">
+        <div
+          class="flex items-center gap-2 pointer-events-auto backdrop-blur-md bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 shadow-lg text-xs">
+          <label
+            class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium"
+            title="Enable GPU depth buffer testing">
             <input type="checkbox" id="depth-test-cb" checked class="accent-sky-400 rounded cursor-pointer" />
             Depth Test
           </label>
 
-          <label class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium" title="Enable GPU depth writing to prevent interior polygons bleeding through">
+          <label
+            class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium"
+            title="Enable GPU depth writing to prevent interior polygons bleeding through">
             <input type="checkbox" id="depth-write-cb" checked class="accent-sky-400 rounded cursor-pointer" />
             Depth Write
           </label>
 
-          <select id="culling-side-select" class="bg-slate-950 text-slate-200 border border-slate-800 rounded-lg px-2 py-1 font-medium focus:outline-none focus:border-sky-400" title="Polygon face culling mode">
+          <select id="culling-side-select"
+            class="bg-slate-950 text-slate-200 border border-slate-800 rounded-lg px-2 py-1 font-medium focus:outline-none focus:border-sky-400"
+            title="Polygon face culling mode">
             <option value="front" selected>Front Side (Cull Back)</option>
             <option value="double">Double Sided</option>
             <option value="back">Back Side Only</option>
           </select>
 
-          <label class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium" title="Disable material alpha transparency if GLTF blend modes misbehave">
+          <label
+            class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium"
+            title="Disable material alpha transparency if GLTF blend modes misbehave">
             <input type="checkbox" id="force-opaque-cb" class="accent-sky-400 rounded cursor-pointer" />
             Force Opaque
           </label>
 
           <div class="w-px h-4 bg-slate-800 mx-1"></div>
 
-          <label class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium">
+          <label
+            class="flex items-center gap-1.5 px-2 py-1 text-slate-300 hover:text-slate-100 cursor-pointer font-medium">
             <input type="checkbox" id="toggle-wireframe-cb" class="accent-sky-400 rounded cursor-pointer" />
             Wireframe
           </label>
@@ -145,7 +189,8 @@
       </div>
 
       <!-- Three.js Canvas Container -->
-      <div id="three-container" class="w-full h-full rounded-xl overflow-hidden bg-slate-950 border border-slate-800/80"></div>
+      <div id="three-container"
+        class="w-full h-full rounded-xl overflow-hidden bg-slate-950 border border-slate-800/80"></div>
     </section>
   </main>
 
@@ -161,4 +206,5 @@
   <!-- Entry Point TypeScript Module -->
   <script type="module" src="/src/main.ts"></script>
 </body>
+
 </html>
